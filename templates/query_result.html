@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<body>
+	{% if topic_name %}
+	  <h2>{{ topic_name }}</h2>
+	{% else %}
+	  <h2>Unravelled Topic</h2>
+	{% endif %}
+    {% if disp_text %}
+	  <p>{{ disp_text }}</p>
+	{% else %}
+	  <p>Unable to generate unravelled text. Please try again.</p>
+		<h2>Enter your query:</h2>
+    	<form action="." method="POST">
+        <input type="text" name="text">
+        <input type="submit" name="my-form" value="unravel">
+    </form>
+	{% endif %}
+</body>
+</html>
+{% endblock %}
