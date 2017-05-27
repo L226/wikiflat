@@ -23,7 +23,7 @@ def hello():
 def query():
     text = request.form['text']
     processed_text = generate_unravelled_text(text)
-    return render_template('query_result.html', disp_text=processed_text, topic_name=text), 200
+    return render_template('query_result.html', disp_text=processed_text, topic_name=text.upper()), 200
 
 @app.route("/about")
 def about_page():
@@ -46,4 +46,4 @@ def favicon():
     return "", 200
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run(debug=True)

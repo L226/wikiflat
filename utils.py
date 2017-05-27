@@ -19,8 +19,11 @@ def generate_unravelled_text(input_text, qdepth=3, similarity=0.75, alength='sum
 	"""
 	topicsummary = webget(topic=input_text)
 	if topicsummary is not None:
-		topic_sentences = split_raw_text(topicsummary)
-
+		# topic_sentences = split_raw_text(topicsummary)
+		full_summary = []
+		qdepth = qdepth - 1 # hmmm
+		with split_raw_text(topicsummary) as sent:
+			parse_obj = sent_parse(sent)
 	else:
 		return None
 
