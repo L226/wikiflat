@@ -39,7 +39,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 				for link in links:
 					if link in sentence:
 						if word_distance_check(link, input_text, similarity):
-							full_summary += generate_unravelled_text(input_text=link, full_summary=full_summary,qdepth=current_depth)
+							full_summary += generate_unravelled_text(input_text=link, qdepth=current_depth)
 							full_summary += " "
 							links.remove(link)
 		return full_summary
