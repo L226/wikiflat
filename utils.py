@@ -7,8 +7,11 @@ general utils for unravel project
 - text reconstruct
 - job metadata
 """
+import os
+import logging
+import wikipedia
 
-def generate_unravelled_text(input_text, qdepth=3, similarity=0.75, alength='summary'):
+def generate_unravelled_text(input_text=None, url_link=None, qdepth=3, similarity=0.75, alength='summary', full_summary=[]):
 	"""
 	generate the full unravelled text
 	params:
@@ -17,20 +20,33 @@ def generate_unravelled_text(input_text, qdepth=3, similarity=0.75, alength='sum
 	- similarity, the cosine distance minimum for sub-topic inclusion
 	- alength, the length of article to be returned - ["full","summary"]
 	"""
-	topicsummary = webget(topic=input_text)
+	topicsummary = webget(topic=input_text, url=url_link)
 	if topicsummary is not None:
 		# topic_sentences = split_raw_text(topicsummary)
-		full_summary = []
-		qdepth = qdepth - 1 # hmmm
-		with split_raw_text(topicsummary) as sent:
-			parse_obj = sent_parse(sent)
+		# full_summary = []
+		for sentence in split_raw_text(topicsummary):
+			parsed_sentence, links = sent_parse(sentence)
+			full_summary.append(parsed_sentence)
+			current_depth = qdepth -1
+			if current_depth <= 0:
+				return full_summary
+			else:
+				for link in links:
+					if word_distance_check(link['word'], input_text, similarity):
+						generate_unravelled_text(input_text=link['word'], url_link=link['url'], full_summary=full_summary,qdepth=current_depth)
+		return full_summary
 	else:
-		return None
+		return full_summary
 
-def webget(topic="", url=""):
+def webget(topic=None, url=None):
 	"""
 	get the relevant wiki summary for topic or URL
 	"""
+	try:
+		if topic is not None:
+			return wikipedia.summary(topic)
+	except wikipedia.exceptions as err:
+		logging.critical("Wikipedia error: %s" % err)
 	return None
 
 def split_raw_text(raw):
@@ -41,22 +57,32 @@ def split_raw_text(raw):
 
 def sent_parse(sentence):
 	"""
-	look for any links in the raw sentence, return list (need order preserved):
-		[
-		{parsed:"sentence without html",
-		links:[link1,link2 ...]},
-		...
-		{parsed:"sentence without html",
-		links:[link1,link2 ...]}
-		]
+	look for any links in the raw sentence, returns:
+	("parsed sentence",
+	[{link_word, url},
+	 ..., 
+	 {link_word, url}])
 	"""
 	return None
 
-def word_distance(topic, testword):
+def word_distance_check(topic, testword, similarity):
 	"""
-	word2vec cosine distance of testword from topic
+	perform word2vec cosine distance of testword from topic
+	if distance greater than similarity, return False
 	"""
-	return 0
+	return False
+
+def cache_get(topic):
+	"""
+	checks the cache for topic and returns if found
+	"""
+	return None
+
+def cache_set(topic, text, links):
+	"""
+	saves topic data and links to cache
+	"""
+	return None
 
 def stats():
 	"""

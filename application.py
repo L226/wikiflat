@@ -25,6 +25,11 @@ def query():
     processed_text = generate_unravelled_text(text)
     return render_template('query_result.html', disp_text=processed_text, topic_name=text.upper()), 200
 
+@app.route('/<text>',)
+def direct_query(text):
+    processed_text = generate_unravelled_text(text)
+    return render_template('query_result.html', disp_text=processed_text, topic_name=text.upper()), 200
+
 @app.route("/about")
 def about_page():
     return render_template('about.html'), 200
