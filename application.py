@@ -42,6 +42,10 @@ def not_found(error):
 def server_issues(error):
     return render_template('503.html'), 503
 
+@app.errorhandler(500)
+def server_issues_500(error):
+    return render_template('500.html'), 500
+
 @app.route("/maintenance")
 def server_maintenance():
     return render_template('maintenance.html'), 200
