@@ -40,7 +40,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 					if link.lower() in sentence.lower():
 						if word_distance_check(link, input_text, similarity):
 							full_summary += generate_unravelled_text(input_text=link, qdepth=current_depth)
-							full_summary += "\n\n"
+							full_summary += "<br>"
 							links.remove(link)
 		return full_summary
 	else:
