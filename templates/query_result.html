@@ -10,6 +10,9 @@
 	{% endif %}
     {% if disp_text %}
 	  <p>{{ disp_text }}</p>
+	  {% if siteurl %}
+	    <h4><a class="border-button" href={{ siteurl }} >Original Page</a></h4>
+	  {% endif %}
 	{% else %}
 	  <p>Unable to generate unravelled text. Please try again.</p>
 		<h2>Enter your query:</h2>

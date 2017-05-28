@@ -24,6 +24,7 @@ def generate_unravelled_text(input_text=None, qdepth=3, similarity=0.75, alength
 	- similarity, the cosine distance minimum for sub-topic inclusion
 	- alength, the length of article to be returned - ["full","summary"]
 	"""
+	logging.critical("beginning unravel process for %s, qdepth=%d" % (input_text, qdepth))
 	topicpage = webget(topic=input_text)
 	if topicpage is not None:
 		topicsummary = topicpage.summary
@@ -38,7 +39,9 @@ def generate_unravelled_text(input_text=None, qdepth=3, similarity=0.75, alength
 				for link in links:
 					if link in sentence:
 						if word_distance_check(link, input_text, similarity):
-							generate_unravelled_text(input_text=link, full_summary=full_summary,qdepth=current_depth)
+							full_summary += generate_unravelled_text(input_text=link, full_summary=full_summary,qdepth=current_depth)
+							full_summary += " "
+							links.remove(link)
 		return full_summary
 	else:
 		return full_summary
@@ -47,9 +50,20 @@ def webget(topic=None):
 	"""
 	get the relevant wiki summary for topic or URL
 	"""
+	logging.critical("webget %s commencing" % topic)
 	try:
 		if topic is not None:
-			return wikipedia.page(topic)
+			cg = cache_get(topic)
+			if cg is None:
+				topicpage = wikipedia.page(title=topic, preload=True)
+				cache_set(topicpage)
+				return topicpage
+			else:
+				return cg
+	except wikipedia.exceptions.DisambiguationError as err:
+		logging.info("Wikipedia disambig error: %s" % err)
+		# might eventually handle this better
+		return None
 	except wikipedia.exceptions as err:
 		logging.critical("Wikipedia error: %s" % err)
 	return None
@@ -65,7 +79,7 @@ def word_distance_check(topic, testword, similarity):
 	perform word2vec cosine distance of testword from topic
 	if distance greater than similarity, return False
 	"""
-	return False
+	return True
 
 def cache_get(topic):
 	"""
@@ -73,7 +87,7 @@ def cache_get(topic):
 	"""
 	return None
 
-def cache_set(topic, text, links):
+def cache_set(topicpage):
 	"""
 	saves topic data and links to cache
 	"""
