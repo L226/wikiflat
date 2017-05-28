@@ -15,7 +15,7 @@ from nltk import tokenize
 
 nltk.download('punkt')
 
-def generate_unravelled_text(input_text=None, qdepth=3, similarity=0.75, alength='summary', full_summary=""):
+def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=""):
 	"""
 	generate the full unravelled text
 	params:
