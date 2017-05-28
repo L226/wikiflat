@@ -3,6 +3,7 @@ I am a flask app
 """
 
 import logging
+import HTMLParser
 from flask import Flask
 from flask import request
 from flask import render_template
@@ -31,7 +32,10 @@ def query():
 		siteurl = page.url
 	else:
 		siteurl = None
-	return render_template('query_result.html', disp_text=processed_text.encode('ascii', 'xmlcharrefreplace'), topic_name=text.upper(), siteurl=siteurl), 200
+	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
+	html_parser = HTMLParser.HTMLParser()
+	disp_text = html_parser.unescape(processed_text)
+	return render_template('query_result.html', disp_text=disp_text, topic_name=text.upper(), siteurl=siteurl), 200
 
 @app.route('/<text>',)
 def direct_query(text):
@@ -41,7 +45,10 @@ def direct_query(text):
 		siteurl = page.url
 	else:
 		siteurl = None
-	return render_template('query_result.html', disp_text=processed_text.encode('ascii', 'xmlcharrefreplace'), topic_name=text.upper(), siteurl=siteurl), 200
+	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
+	html_parser = HTMLParser.HTMLParser()
+	disp_text = html_parser.unescape(processed_text)
+	return render_template('query_result.html', disp_text=disp_text, topic_name=text.upper(), siteurl=siteurl), 200
 
 @app.route("/about")
 def about_page():
