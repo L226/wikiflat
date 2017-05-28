@@ -55,7 +55,7 @@ def webget(topic=None):
 		if topic is not None:
 			cg = cache_get(topic)
 			if cg is None:
-				topicpage = wikipedia.page(title=topic, preload=True)
+				topicpage = wikipedia.page(title=topic)# , preload=True) - causes open issue keyerr extlinks
 				cache_set(topicpage)
 				return topicpage
 			else:
