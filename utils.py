@@ -10,8 +10,12 @@ general utils for unravel project
 import os
 import logging
 import wikipedia
+import nltk
+from nltk import tokenize
 
-def generate_unravelled_text(input_text=None, url_link=None, qdepth=3, similarity=0.75, alength='summary', full_summary=[]):
+nltk.download('punkt')
+
+def generate_unravelled_text(input_text=None, qdepth=3, similarity=0.75, alength='summary', full_summary=""):
 	"""
 	generate the full unravelled text
 	params:
@@ -20,31 +24,32 @@ def generate_unravelled_text(input_text=None, url_link=None, qdepth=3, similarit
 	- similarity, the cosine distance minimum for sub-topic inclusion
 	- alength, the length of article to be returned - ["full","summary"]
 	"""
-	topicsummary = webget(topic=input_text, url=url_link)
-	if topicsummary is not None:
-		# topic_sentences = split_raw_text(topicsummary)
-		# full_summary = []
+	topicpage = webget(topic=input_text)
+	if topicpage is not None:
+		topicsummary = topicpage.summary
+		links = topicpage.links
 		for sentence in split_raw_text(topicsummary):
-			parsed_sentence, links = sent_parse(sentence)
-			full_summary.append(parsed_sentence)
+			full_summary += sentence
+			full_summary += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
 				return full_summary
 			else:
 				for link in links:
-					if word_distance_check(link['word'], input_text, similarity):
-						generate_unravelled_text(input_text=link['word'], url_link=link['url'], full_summary=full_summary,qdepth=current_depth)
+					if link in sentence:
+						if word_distance_check(link, input_text, similarity):
+							generate_unravelled_text(input_text=link, full_summary=full_summary,qdepth=current_depth)
 		return full_summary
 	else:
 		return full_summary
 
-def webget(topic=None, url=None):
+def webget(topic=None):
 	"""
 	get the relevant wiki summary for topic or URL
 	"""
 	try:
 		if topic is not None:
-			return wikipedia.summary(topic)
+			return wikipedia.page(topic)
 	except wikipedia.exceptions as err:
 		logging.critical("Wikipedia error: %s" % err)
 	return None
@@ -53,17 +58,7 @@ def split_raw_text(raw):
 	"""
 	split raw text into sentences
 	"""
-	return None
-
-def sent_parse(sentence):
-	"""
-	look for any links in the raw sentence, returns:
-	("parsed sentence",
-	[{link_word, url},
-	 ..., 
-	 {link_word, url}])
-	"""
-	return None
+	return tokenize.sent_tokenize(raw)
 
 def word_distance_check(topic, testword, similarity):
 	"""

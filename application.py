@@ -23,12 +23,12 @@ def hello():
 def query():
     text = request.form['text']
     processed_text = generate_unravelled_text(text)
-    return render_template('query_result.html', disp_text=processed_text, topic_name=text.upper()), 200
+    return render_template('query_result.html', disp_text=processed_text.encode('ascii', 'xmlcharrefreplace'), topic_name=text.upper()), 200
 
 @app.route('/<text>',)
 def direct_query(text):
     processed_text = generate_unravelled_text(text)
-    return render_template('query_result.html', disp_text=processed_text, topic_name=text.upper()), 200
+    return render_template('query_result.html', disp_text=processed_text.encode('ascii', 'xmlcharrefreplace'), topic_name=text.upper()), 200
 
 @app.route("/about")
 def about_page():
