@@ -53,7 +53,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 				return [sentence], siteurl
 			else:
 				for link in links:
-					if link.lower() in sentence.lower() and link.lower() is not in prevlinked:
+					if link.lower() in sentence.lower() and link.lower() not in prevlinked:
 					# doesn't get non identical link text, link value
 						if word_distance_check(link, input_text, similarity):
 							prevlinked.append(link)
