@@ -9,6 +9,7 @@ general utils for unravel project
 """
 import os
 import logging
+import redis
 import HTMLParser
 import wikipedia
 import nltk
@@ -102,12 +103,20 @@ def cache_get(topic):
 	"""
 	checks the cache for topic and returns if found
 	"""
+	if os.environ.get("REDIS_URL", None) is None:
+		r = redis.StrictRedis(host='redis', port=6379)
+	else:
+		r = redis.from_url(os.environ.get("REDIS_URL"))
 	return None
 
 def cache_set(topicpage):
 	"""
 	saves topic data and links to cache
 	"""
+	if os.environ.get("REDIS_URL", None) is None:
+		r = redis.StrictRedis(host='redis', port=6379)
+	else:
+		r = redis.from_url(os.environ.get("REDIS_URL"))
 	return None
 
 def stats():
