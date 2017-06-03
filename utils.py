@@ -29,7 +29,7 @@ def gen_disp_text(input_text=None):
 	"""
 	generate html safe text for display
 	"""
-	processed_text, siteurl = generate_unravelled_text(input_text=input_text, full_summary=[])
+	processed_text, siteurl = generate_unravelled_text(input_text=input_text, full_summary=[], prevlinked=[], qdepth=2)
 	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
 	html_parser = HTMLParser.HTMLParser()
 	disp_text = ""
