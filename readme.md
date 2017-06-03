@@ -1,4 +1,5 @@
-# Unravel
+# Wikiflat
+#### (né Unravel)
 A small app to flatten out in depth wikipedia topic summaries into a single article.
 
 When reading deep (usually technical) topics on wikipedia I sometimes find it tedious to follow 'rabbit holes' of hyperlinks from the original article. The purpose of this app is to 'flatten' the tree structure of these page hyperlinks into a longer, denser article that allows the reader to very quickly get a good overview of a given topic without having to click down through many sub-topics.
@@ -15,5 +16,22 @@ To prevent the summary article from diverging down branches that have only curso
 - full page summaries
 
 ## Deployment
+- [Demo App (Heroku)](http://wikiflat.herokuapp.com)
 
-- [Demo App (Heroku)](http://floating-ocean-84583.herokuapp.com)
+### Development
+- Run with docker-compose to provision a local redis cache for the app
+```
+$ docker-compose build
+$ docker-compose up
+```
+
+- Run with Docker
+```
+$ docker build -it wikiflat .
+$ docker run -p 80:8000 -it wikiflat
+```
+
+- Run with python
+```
+$ python application.py
+```
