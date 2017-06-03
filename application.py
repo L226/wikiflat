@@ -3,13 +3,12 @@ I am a flask app
 """
 
 import logging
-import HTMLParser
+
 from flask import Flask
 from flask import request
 from flask import render_template
 from flask import Response
-from utils import generate_unravelled_text
-from utils import webget
+from utils import gen_disp_text
 # import wikipedia
 app = Flask(__name__)
 app.config.from_object('siteconfig')
@@ -26,18 +25,12 @@ def hello():
 @app.route('/', methods=['POST'])
 def query():
 	text = request.form['text']
-	processed_text, siteurl = generate_unravelled_text(text)
-	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
-	html_parser = HTMLParser.HTMLParser()
-	disp_text = html_parser.unescape(processed_text)
+	disp_text, siteurl = gen_disp_text(input_text=text)
 	return render_template('query_result.html', disp_text=disp_text, topic_name=text.upper(), siteurl=siteurl), 200
 
 @app.route('/<text>',)
 def direct_query(text):
-	processed_text, siteurl = generate_unravelled_text(text)
-	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
-	html_parser = HTMLParser.HTMLParser()
-	disp_text = html_parser.unescape(processed_text)
+	disp_text, siteurl = gen_disp_text(input_text=text)
 	return render_template('query_result.html', disp_text=disp_text, topic_name=text.upper(), siteurl=siteurl), 200
 
 @app.route("/about")

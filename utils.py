@@ -9,11 +9,25 @@ general utils for unravel project
 """
 import os
 import logging
+import HTMLParser
 import wikipedia
 import nltk
 from nltk import tokenize
 
 nltk.download('punkt')
+
+def gen_disp_text(input_text=None):
+	"""
+	generate html safe text for display
+	"""
+	processed_text, siteurl = generate_unravelled_text(input_text=input_text)
+	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
+	html_parser = HTMLParser.HTMLParser()
+	disp_text = ""
+	for row in processed_text:
+		disp_text += html_parser.unescape(row)
+		disp_text += "\n"
+	return disp_text, siteurl
 
 def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[]):
 	"""
@@ -30,20 +44,20 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 		siteurl = topicpage.url
 		topicsummary = topicpage.summary
 		links = topicpage.links
-		tmp_summ = ""
+		tmp_summ = []
 		for sentence in split_raw_text(topicsummary):
-			tmp_summ += sentence
-			tmp_summ += " "
+			tmp_summ.append(sentence)
+			# tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
-				full_summary.append(tmp_summ)
-				return full_summary
+				full_summary.extend(tmp_summ)
+				return full_summary, siteurl
 			else:
 				for link in links:
 					if link.lower() in sentence.lower(): # doesn't get non identical link text, link value
 						if word_distance_check(link, input_text, similarity):
-							tmp_summ += generate_unravelled_text(input_text=link, qdepth=current_depth)[0]
-							full_summary.append(tmp_summ)
+							tmp_summ.extend(generate_unravelled_text(input_text=link, qdepth=current_depth)[0])
+							full_summary.extend(tmp_summ)
 					links.remove(link)
 		return full_summary, siteurl
 	else:
