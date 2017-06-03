@@ -9,11 +9,19 @@ general utils for unravel project
 """
 import os
 import logging
+import logging.config
 import redis
 import HTMLParser
 import wikipedia
 import nltk
 from nltk import tokenize
+try:
+	import cPickle as pickle
+except:
+	import pickle
+
+logging.config.fileConfig('log.conf')
+logger = logging.getLogger(__name__)
 
 nltk.download('punkt')
 
@@ -39,7 +47,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 	- similarity, the cosine distance minimum for sub-topic inclusion
 	- alength, the length of article to be returned - ["full","summary"]
 	"""
-	logging.critical("beginning unravel process for %s, qdepth=%d" % (input_text, qdepth))
+	logger.info("beginning unravel process for %s, qdepth=%d" % (input_text, qdepth))
 	topicpage = webget(topic=input_text)
 	if topicpage is not None:
 		siteurl = topicpage.url
@@ -68,22 +76,25 @@ def webget(topic=None):
 	"""
 	get the relevant wiki summary for topic or URL
 	"""
-	logging.critical("webget %s commencing" % topic)
+	logger.debug("webget %s commencing" % topic)
 	try:
 		if topic is not None:
 			cg = cache_get(topic)
 			if cg is None:
-				topicpage = wikipedia.page(title=topic)# , preload=True) - causes open issue keyerr extlinks
-				cache_set(topicpage)
+				logging.info("failed to find cache for %s" % topic)
+				topicpage = wikipedia.page(title=topic, preload=True) # preload causes open issue keyerr extlinks
+				logging.info("setting cache for %s" % topic)
+				cache_set(topic, topicpage)
 				return topicpage
 			else:
+				logging.info("found cache for %s" % topic)
 				return cg
 	except wikipedia.exceptions.DisambiguationError as err:
-		logging.info("Wikipedia disambig error: %s" % err)
+		logger.info("Wikipedia disambig error: %s" % err)
 		# might eventually handle this better
 		return None
 	except wikipedia.exceptions as err:
-		logging.critical("Wikipedia error: %s" % err)
+		logger.critical("Wikipedia error: %s" % err)
 	return None
 
 def split_raw_text(raw):
@@ -99,24 +110,45 @@ def word_distance_check(topic, testword, similarity):
 	"""
 	return True
 
+def redis_connect():
+	"""
+	look for remote or local redis cache and return connection object if found
+	"""
+	if os.environ.get("REDIS_URL", None) is not None:
+		return redis.from_url(os.environ.get("REDIS_URL"))
+	elif os.environ.get("REDIS_PORT", None) is not None: # easy check for docker-compose env
+		return redis.StrictRedis(host='redis', port=os.environ['REDIS_PORT'])
+	else:
+		return None
+
 def cache_get(topic):
 	"""
 	checks the cache for topic and returns if found
 	"""
-	if os.environ.get("REDIS_URL", None) is None:
-		r = redis.StrictRedis(host='redis', port=6379)
-	else:
-		r = redis.from_url(os.environ.get("REDIS_URL"))
+	try:
+		r = redis_connect()
+		if r is not None:
+			logger.info("performing cache lookup for %s" % topic)
+			topicget = r.get(topic)
+			if topicget is not None:
+				return pickle.loads(topicget)
+	except ConnectionError as err:
+		logger.critical("Redis ConnectionError: %s" % err)
 	return None
 
-def cache_set(topicpage):
+def cache_set(topic, topicpage):
 	"""
 	saves topic data and links to cache
 	"""
-	if os.environ.get("REDIS_URL", None) is None:
-		r = redis.StrictRedis(host='redis', port=6379)
-	else:
-		r = redis.from_url(os.environ.get("REDIS_URL"))
+	try:
+		r = redis_connect()
+		if r is not None:
+			if r.set(name=topic, value=pickle.dumps(topicpage), ex=21600): # 6hr expiry
+				logging.info('successfully saved %s to cache' % topic)
+		else:
+			return None
+	except ConnectionError as err:
+		logger.critical("Redis ConnectionError: %s" % err)
 	return None
 
 def stats():

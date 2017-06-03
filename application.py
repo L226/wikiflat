@@ -2,14 +2,12 @@
 I am a flask app
 """
 
-import logging
-
 from flask import Flask
 from flask import request
 from flask import render_template
 from flask import Response
 from utils import gen_disp_text
-# import wikipedia
+
 app = Flask(__name__)
 app.config.from_object('siteconfig')
 

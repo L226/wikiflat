@@ -6,7 +6,9 @@ services:
      - "8000:8000"
     volumes:
      - .:/unravel
-    # depends_on:
-    #  - redis
+    depends_on:
+     - redis
+    environment:
+      - REDIS_PORT=6379
   redis:
     image: "redis:alpine"
