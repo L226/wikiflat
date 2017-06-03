@@ -6,7 +6,10 @@ When reading deep (usually technical) topics on wikipedia I sometimes find it te
 
 To prevent the summary article from diverging down branches that have only cursory relevance to the original topic under investigation, this app uses word2vec to perform cosine similarity between the potential branch link name and the original topic name. If the distance is too great (default: <= 0.75) then that branch is not traversed. Additionally, the depth of the branch search (i.e. number of consecutive nodes followed down a particular branch) is limited to 2 by default.
 
-## TODO
+## Contribute
+My CSS skills suck, please help
+
+### TODO
 - caching of raw wikipedia page summaries
 - word2vec word comparison
 - proper CSS/layout/styling
@@ -18,7 +21,7 @@ To prevent the summary article from diverging down branches that have only curso
 ## Deployment
 - [Demo App (Heroku)](http://wikiflat.herokuapp.com)
 
-### Development
+### Local Development
 - Run with docker-compose to provision a local redis cache for the app
 ```
 $ docker-compose build
