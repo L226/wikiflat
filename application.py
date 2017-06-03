@@ -26,12 +26,7 @@ def hello():
 @app.route('/', methods=['POST'])
 def query():
 	text = request.form['text']
-	processed_text = generate_unravelled_text(text)
-	page = webget(text)
-	if page is not None:
-		siteurl = page.url
-	else:
-		siteurl = None
+	processed_text, siteurl = generate_unravelled_text(text)
 	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
 	html_parser = HTMLParser.HTMLParser()
 	disp_text = html_parser.unescape(processed_text)
@@ -39,12 +34,7 @@ def query():
 
 @app.route('/<text>',)
 def direct_query(text):
-	processed_text = generate_unravelled_text(text)
-	page = webget(text)
-	if page is not None:
-		siteurl = page.url
-	else:
-		siteurl = None
+	processed_text, siteurl = generate_unravelled_text(text)
 	# disp_text = processed_text.encode('ascii', 'xmlcharrefreplace')
 	html_parser = HTMLParser.HTMLParser()
 	disp_text = html_parser.unescape(processed_text)

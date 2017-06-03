@@ -15,7 +15,7 @@ from nltk import tokenize
 
 nltk.download('punkt')
 
-def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=""):
+def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[]):
 	"""
 	generate the full unravelled text
 	params:
@@ -27,24 +27,27 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 	logging.critical("beginning unravel process for %s, qdepth=%d" % (input_text, qdepth))
 	topicpage = webget(topic=input_text)
 	if topicpage is not None:
+		siteurl = topicpage.url
 		topicsummary = topicpage.summary
 		links = topicpage.links
+		tmp_summ = ""
 		for sentence in split_raw_text(topicsummary):
-			full_summary += sentence
-			full_summary += " "
+			tmp_summ += sentence
+			tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
+				full_summary.append(tmp_summ)
 				return full_summary
 			else:
 				for link in links:
 					if link.lower() in sentence.lower(): # doesn't get non identical link text, link value
 						if word_distance_check(link, input_text, similarity):
-							full_summary += generate_unravelled_text(input_text=link, qdepth=current_depth)
-							full_summary += "\n" # newline
+							tmp_summ += generate_unravelled_text(input_text=link, qdepth=current_depth)[0]
+							full_summary.append(tmp_summ)
 					links.remove(link)
-		return full_summary
+		return full_summary, siteurl
 	else:
-		return full_summary
+		return full_summary, None
 
 def webget(topic=None):
 	"""
