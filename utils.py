@@ -50,8 +50,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 			# tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
-				full_summary.extend(tmp_summ)
-				return full_summary, siteurl
+				return tmp_summ, siteurl
 			else:
 				for link in links:
 					if link.lower() in sentence.lower(): # doesn't get non identical link text, link value
