@@ -30,6 +30,7 @@ $ python application.py
 My CSS skills suck, please help. Feel free to help out with any of the TODOs, or raise an issue on github.
 
 ### TODO
+- math function rendering - e.g. see convex optimisation page
 - word2vec test implementation
 - proper CSS/layout/styling
 - interactive flattening params (similarity, query depth etc)

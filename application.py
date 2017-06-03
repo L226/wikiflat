@@ -24,12 +24,12 @@ def hello():
 def query():
 	text = request.form['text']
 	disp_text, siteurl = gen_disp_text(input_text=text)
-	return render_template('query_result.html', disp_text=disp_text, topic_name=text.title(), siteurl=siteurl), 200
+	return render_template('query_result.html', disp_text=disp_text, topic_name=text.replace("_"," ").title(), siteurl=siteurl), 200
 
 @app.route('/<text>',)
 def direct_query(text):
 	disp_text, siteurl = gen_disp_text(input_text=text)
-	return render_template('query_result.html', disp_text=disp_text, topic_name=text.title(), siteurl=siteurl), 200
+	return render_template('query_result.html', disp_text=disp_text, topic_name=text.replace("_"," ").title(), siteurl=siteurl), 200
 
 @app.route("/about")
 def about_page():
