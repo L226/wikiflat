@@ -29,7 +29,7 @@ def gen_disp_text(input_text=None):
 		disp_text += "\n"
 	return disp_text, siteurl
 
-def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[]):
+def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[], prevlinked=[]):
 	"""
 	generate the full unravelled text
 	params:
@@ -42,6 +42,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 	topicpage = webget(topic=input_text)
 	if topicpage is not None:
 		siteurl = topicpage.url
+		prevlinked.append(input_text)
 		topicsummary = topicpage.summary
 		links = topicpage.links
 		for sentence in split_raw_text(topicsummary):
@@ -52,9 +53,11 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 				return [sentence], siteurl
 			else:
 				for link in links:
-					if link.lower() in sentence.lower(): # doesn't get non identical link text, link value
+					if link.lower() in sentence.lower() and link.lower() is not in prevlinked:
+					# doesn't get non identical link text, link value
 						if word_distance_check(link, input_text, similarity):
-							full_summary.extend(generate_unravelled_text(input_text=link, qdepth=current_depth, full_summary=[])[0])
+							prevlinked.append(link)
+							full_summary.extend(generate_unravelled_text(input_text=link, qdepth=current_depth, full_summary=[], prevlinked=prevlinked)[0])
 						links.remove(link)
 		return full_summary, siteurl
 	else:
