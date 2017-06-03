@@ -35,7 +35,7 @@ def gen_disp_text(input_text=None):
 	disp_text = ""
 	for row in processed_text:
 		disp_text += html_parser.unescape(row)
-		disp_text += "<br />"
+		# disp_text += "<br />"
 	return disp_text, siteurl
 
 def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[], prevlinked=[]):
@@ -55,11 +55,11 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 		topicsummary = topicpage.summary
 		links = topicpage.links
 		for sentence in split_raw_text(topicsummary):
-			full_summary.append(sentence)
+			full_summary.extend([sentence, " "])
 			# tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
-				return [sentence], siteurl
+				return [sentence, "<br /><br />"], siteurl
 			else:
 				for link in links:
 					if link.lower() in sentence.lower() and link.lower() not in prevlinked:

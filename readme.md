@@ -7,7 +7,7 @@ When reading deep (usually technical) topics on wikipedia I sometimes find it te
 To prevent the summary article from diverging down branches that have only cursory relevance to the original topic under investigation, this app uses word2vec to perform cosine similarity between the potential branch link name and the original topic name. If the distance is too great (default: <= 0.75) then that branch is not traversed. Additionally, the depth of the branch search (i.e. number of consecutive nodes followed down a particular branch) is limited to 2 by default.
 
 ## Deployment
-- [Demo App (Heroku)](http://wikiflat.herokuapp.com)
+- [Demo App (Heroku - free tier, please be gentle)](http://wikiflat.herokuapp.com)
 
 ### Local Development
 - Run with docker-compose to provision a local redis cache for the app
@@ -30,7 +30,7 @@ $ python application.py
 My CSS skills suck, please help. Feel free to help out with any of the TODOs, or raise an issue on github.
 
 ### TODO
-- fix newline after branch summary appended to final text
+- word2vec test implementation
 - proper CSS/layout/styling
 - interactive flattening params (similarity, query depth etc)
 - link traversal via html hyperlinks (matches non identical link/link text) or similar soln

@@ -4,7 +4,9 @@
 <html lang="en">
 <body>
     <h2>About</h2>
-    <p>Unravel is a tree flattening algorithm that transforms topics from wikipedia into brief summary articles. Word distance evaluation provided by <a href="https://en.wikipedia.org/wiki/Word2vec" target='blank'>Word2vec</a>.</p>
+    <p>Wikiflat is a tree flattening algorithm that transforms topics from Wikipedia into brief summary articles. The purpose is to provide a dense article that allows the reader to quickly get an in depth overview of some topic, without clicking multiple subtopic links as on Wikipedia.</p>
+    <p>
+    To prevent the summary article from diverging down branches that have only cursory relevance to the original topic under investigation, this app uses <a href="https://en.wikipedia.org/wiki/Word2vec" target='blank'>Word2vec</a> to perform cosine similarity between the potential branch link name and the original topic name. If the distance is too great (default: <= 0.75) then that branch is not traversed. Additionally, the depth of the branch search (i.e. number of consecutive nodes followed down a particular branch) is limited to 2 by default.</p>
     <p>Examples:
     <li><a href="/Convex_optimization" >Convex Optimization</a> (article I was reading when I thought of this site)</li>
     <li><a href="/Rome" >Rome</a></li>
