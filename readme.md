@@ -30,9 +30,9 @@ $ python application.py
 My CSS skills suck, please help. Feel free to help out with any of the TODOs, or raise an issue on github.
 
 ### TODO
-- word2vec word comparison
+- fix newline <br /> after branch summary appended to final text
 - proper CSS/layout/styling
-- interactive generator params (similarity, query depth etc)
-- link traversal via html hyperlinks (matches non identical link/link text)
+- interactive flattening params (similarity, query depth etc)
+- link traversal via html hyperlinks (matches non identical link/link text) or similar soln
 	- currently 2 word links, unmatched links do not get traversed by the algorithm
-- full page summaries
+- full page summaries (might take a long time to construct)
