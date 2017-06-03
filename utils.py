@@ -44,19 +44,17 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 		siteurl = topicpage.url
 		topicsummary = topicpage.summary
 		links = topicpage.links
-		tmp_summ = []
 		for sentence in split_raw_text(topicsummary):
-			tmp_summ.append(sentence)
+			full_summary.append(sentence)
 			# tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
-				return tmp_summ, siteurl
+				return [sentence], siteurl
 			else:
 				for link in links:
 					if link.lower() in sentence.lower(): # doesn't get non identical link text, link value
 						if word_distance_check(link, input_text, similarity):
-							tmp_summ.extend(generate_unravelled_text(input_text=link, qdepth=current_depth)[0])
-							full_summary.extend(tmp_summ)
+							full_summary.extend(generate_unravelled_text(input_text=link, qdepth=current_depth, full_summary=[])[0])
 					links.remove(link)
 		return full_summary, siteurl
 	else:
