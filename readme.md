@@ -30,7 +30,7 @@ $ python application.py
 My CSS skills suck, please help. Feel free to help out with any of the TODOs, or raise an issue on github.
 
 ### TODO
-- fix newline <br /> after branch summary appended to final text
+- fix newline after branch summary appended to final text
 - proper CSS/layout/styling
 - interactive flattening params (similarity, query depth etc)
 - link traversal via html hyperlinks (matches non identical link/link text) or similar soln

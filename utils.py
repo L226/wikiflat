@@ -35,7 +35,7 @@ def gen_disp_text(input_text=None):
 	disp_text = ""
 	for row in processed_text:
 		disp_text += html_parser.unescape(row)
-		disp_text += "\n"
+		disp_text += "<br />"
 	return disp_text, siteurl
 
 def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength='summary', full_summary=[], prevlinked=[]):
