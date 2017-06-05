@@ -59,7 +59,7 @@ def generate_unravelled_text(input_text=None, qdepth=2, similarity=0.75, alength
 			# tmp_summ += " "
 			current_depth = qdepth -1
 			if current_depth <= 0:
-				return [sentence, "<br /><br />"], siteurl
+				return [sentence, "<br /><br />"], siteurl # this prevents whole summaries from being returned
 			else:
 				for link in links:
 					if link.lower() in sentence.lower() and link.lower() not in prevlinked:
@@ -108,6 +108,7 @@ def word_distance_check(topic, testword, similarity):
 	perform word2vec cosine distance of testword from topic
 	if distance greater than similarity, return False
 	"""
+	# connect to API service
 	return True
 
 def redis_connect():
